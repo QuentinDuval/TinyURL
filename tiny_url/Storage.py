@@ -5,17 +5,7 @@ from colorama import Fore
 class Storage:
     def __init__(self):
         self.engine = self._init_engine()
-
-    def init_datamodel(self):
-        with self.engine.connect():
-            metadata = db.MetaData()
-            if 'url_mapping' not in metadata:
-                db.Table(
-                    'url_mapping', metadata,
-                    db.Column('tiny', db.String, primary_key=True),
-                    db.Column('full', db.String)
-                )
-                metadata.create_all(self.engine)
+        self._init_datamodel()
 
     def add_link(self, tiny_url, full_url):
         try:
@@ -47,5 +37,17 @@ class Storage:
     def _init_engine(self):
         with open('secrets/postgres.txt') as secrets:
             secrets = secrets.read().strip()
+            # TODO - inject postgres information
             # db.create_engine('dialect+driver://user:pass@host:port/db')
             return db.create_engine("postgresql://{secrets}@127.0.0.1:5432/tiny_url".format(secrets=secrets))
+
+    def _init_datamodel(self):
+        with self.engine.connect():
+            metadata = db.MetaData()
+            if 'url_mapping' not in metadata:
+                db.Table(
+                    'url_mapping', metadata,
+                    db.Column('tiny', db.String, primary_key=True),
+                    db.Column('full', db.String)
+                )
+                metadata.create_all(self.engine)
