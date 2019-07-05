@@ -9,7 +9,7 @@ from tiny_url.Storage import Storage
 
 class TinyURL:
     def __init__(self, configuration: Configuration):
-        self.url_prefix = configuration.domain_name + "/"
+        self.url_prefix = configuration.domain_name + ":" + str(configuration.port) + "/"
         self.storage = Storage(configuration=configuration)
         self.zk = KazooClient(hosts=configuration.zookeeper_host)
         self.zk.start()

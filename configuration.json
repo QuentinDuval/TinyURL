@@ -1,5 +1,6 @@
 {
-  "domain_name": "http://dqduv01:8181",
+  "domain_name": "http://dqduv01",
+  "port": 8181,
   "zookeeper": "127.0.0.1:2181",
   "postgres": "127.0.0.1:5432",
   "postgres_secrets": "secrets/postgres.txt"

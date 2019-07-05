@@ -25,4 +25,4 @@ def get_tiny_url(tiny_id):
 if __name__ == '__main__':
     # For debugging purposes, run on the default port
     # For production, use "flask run --port=80"
-    app.run(host='0.0.0.0', port=8181)
+    app.run(host='0.0.0.0', port=configuration.port)
