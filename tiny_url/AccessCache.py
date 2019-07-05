@@ -1,6 +1,12 @@
+import redis
 
-# TODO - LRU cache to store a mapping from tiny URL to real URL
-# TODO - in truth, you should use Redis
 
 class AccessCache:
-    pass
+    def __init__(self):
+        self.redis_connection = redis.Redis()
+
+    def put(self, identifier, full_url):
+        self.redis_connection.set(identifier, full_url)
+
+    def get(self, identifier):
+        return self.redis_connection.get(identifier)

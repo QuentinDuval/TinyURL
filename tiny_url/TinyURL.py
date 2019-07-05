@@ -1,7 +1,9 @@
+from colorama import Fore
+from kazoo.client import KazooClient
+
 from tiny_url.AccessCache import AccessCache
 from tiny_url.IdentifierStream import IdentifierStream
 from tiny_url.Storage import Storage
-from kazoo.client import KazooClient
 
 
 class TinyURL:
@@ -18,8 +20,15 @@ class TinyURL:
         identifier = next(self.identifiers)
         identifier = str(identifier)
         self.storage.add_link(identifier, full_url)
+        self.cache.put(identifier, full_url)
         return self.url_prefix + identifier
 
-    def get_link(self, tiny_url):
-        # TODO - search cache first
-        return self.storage.get_full(tiny_url)
+    def get_link(self, identifier):
+        result = self.cache.get(identifier)
+        if result is not None:
+            return result
+
+        print(Fore.BLUE + "Cache miss for " + identifier + Fore.RESET)
+        result = self.storage.get_full(identifier)
+        self.cache.put(identifier, result)
+        return result
