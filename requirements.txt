@@ -1,0 +1,4 @@
+colorama
+kazoo
+psycopg2
+sqlalchemy
