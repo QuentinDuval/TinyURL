@@ -2,15 +2,16 @@ from colorama import Fore
 from kazoo.client import KazooClient
 
 from tiny_url.AccessCache import AccessCache
+from tiny_url.Configuration import Configuration
 from tiny_url.IdentifierStream import IdentifierStream
 from tiny_url.Storage import Storage
 
 
 class TinyURL:
-    def __init__(self, url_prefix):
-        self.url_prefix = url_prefix + "/"
-        self.storage = Storage()
-        self.zk = KazooClient(hosts='127.0.0.1:2181')  # TODO - inject zookeeper information
+    def __init__(self, configuration: Configuration):
+        self.url_prefix = configuration.domain_name + "/"
+        self.storage = Storage(configuration=configuration)
+        self.zk = KazooClient(hosts=configuration.zookeeper_host)
         self.zk.start()
         self.zk.add_listener(lambda zk_state: print(zk_state))
         self.identifiers = IdentifierStream(zk=self.zk, reservation_size=10)

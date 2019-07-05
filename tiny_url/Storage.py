@@ -1,10 +1,11 @@
 import sqlalchemy as db
 from colorama import Fore
+from tiny_url.Configuration import Configuration
 
 
 class Storage:
-    def __init__(self):
-        self.engine = self._init_engine()
+    def __init__(self, configuration: Configuration):
+        self.engine = self._init_engine(configuration)
         self._init_datamodel()
 
     def add_link(self, tiny_url, full_url):
@@ -34,12 +35,12 @@ class Storage:
             result_proxy = connection.execute(query)
             return result_proxy.fetchall()
 
-    def _init_engine(self):
-        with open('secrets/postgres.txt') as secrets:
+    def _init_engine(self, configuration: Configuration):
+        with open(configuration.postgres_secrets) as secrets:
             secrets = secrets.read().strip()
-            # TODO - inject postgres information
             # db.create_engine('dialect+driver://user:pass@host:port/db')
-            return db.create_engine("postgresql://{secrets}@127.0.0.1:5432/tiny_url".format(secrets=secrets))
+            return db.create_engine("postgresql://{secrets}@{postgres_host}/tiny_url".format(
+                secrets=secrets, postgres_host=configuration.postgres_host))
 
     def _init_datamodel(self):
         with self.engine.connect():

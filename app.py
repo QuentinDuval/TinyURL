@@ -1,9 +1,11 @@
 from flask import Flask, render_template, request, jsonify, redirect
+from tiny_url.Configuration import Configuration
 from tiny_url.TinyURL import TinyURL
 
 
 app = Flask(__name__)
-engine = TinyURL(url_prefix="http://dqduv01")   # TODO - parameterize
+configuration = Configuration.read_from('configuration.json')
+engine = TinyURL(configuration=configuration)
 
 
 @app.route("/link", methods=['POST'])
